@@ -91,10 +91,7 @@ function LoginScreen({ onLogin }) {
                 Enter Dashboard
               </button>
 
-              <p className="login-hint">
-                For demo in viva: you can say the login is a front-end check and
-                backend auth can be plugged in later.
-              </p>
+            
             </form>
           </div>
         </div>
