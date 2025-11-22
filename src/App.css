@@ -705,3 +705,123 @@ body {
     height: 260px !important;
   }
 }
+/* ===== Startup Login Screen ===== */
+
+.login-root {
+  min-height: 100vh;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: radial-gradient(circle at top, #1a2140 0, #050815 55%);
+}
+
+.login-card {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.9fr);
+  gap: 32px;
+  background: linear-gradient(145deg, #050816, #030716);
+  border-radius: 24px;
+  padding: 28px 28px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.9);
+}
+
+.login-left {
+  padding-right: 10px;
+}
+
+.login-title {
+  margin: 14px 0 8px;
+  font-size: 2.4rem;
+  letter-spacing: 0.02em;
+}
+
+.login-subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-soft);
+  max-width: 480px;
+}
+
+.login-bullets {
+  margin: 16px 0 0;
+  padding-left: 18px;
+  font-size: 0.85rem;
+  color: var(--text-soft);
+}
+
+.login-bullets li {
+  margin-bottom: 4px;
+}
+
+.login-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-panel {
+  width: 100%;
+  max-width: 360px;
+  background: radial-gradient(circle at top left, #1f2749 0, #050816 60%);
+  border-radius: 20px;
+  padding: 20px 18px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+}
+
+.login-panel h2 {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+}
+
+.login-panel-sub {
+  margin: 0 0 14px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-btn {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.login-hint {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--text-soft);
+  opacity: 0.85;
+}
+
+.login-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  opacity: 0.8;
+}
+
+/* responsive login layout */
+@media (max-width: 900px) {
+  .login-card {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 22px 18px 18px;
+  }
+
+  .login-root {
+    padding: 20px 14px;
+  }
+
+  .login-title {
+    font-size: 2rem;
+  }
+}

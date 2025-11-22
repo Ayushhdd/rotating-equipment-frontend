@@ -1,6 +1,7 @@
 // src/App.js
 import React, { useState } from "react";
 import MachineGallery from "./MachineGallery";
+import LoginScreen from "./LoginScreen";
 import ChartPanel from "./ChartPanel";
 import axios from "axios";
 import "./App.css";
@@ -9,6 +10,8 @@ const API_BASE_URL = "https://rotating-backend-1.onrender.com";
 
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
   const [form, setForm] = useState({
     vibration_x: "",
     vibration_y: "",
@@ -16,6 +19,8 @@ function App() {
     acoustic_level: "",
     temperature: "",
   });
+  // ...rest of your states stay same
+
 
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
@@ -97,7 +102,10 @@ function App() {
     if (lower.includes("bearing")) return "badge danger";
     return "badge neutral";
   };
-
+  
+  if (!isAuthenticated) {
+  return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
+}
   return (
     <div className="app-root">
       {/* TOP HERO + NAV STRIP */}
@@ -489,7 +497,8 @@ function App() {
 
 /* Small presentational components */
 
-function InputField({ label, name, value, onChange, placeholder }) {
+function InputField({ label, name, value, onChange, placeholder }) 
+{
   return (
     <label className="field">
       <span className="field-label">{label}</span>
@@ -506,7 +515,8 @@ function InputField({ label, name, value, onChange, placeholder }) {
   );
 }
 
-function MetricCard({ label, value, sub }) {
+function MetricCard({ label, value, sub }) 
+{
   return (
     <div className="metric-card">
       <div className="metric-label">{label}</div>
@@ -516,7 +526,8 @@ function MetricCard({ label, value, sub }) {
   );
 }
 
-function ArchitectureCard({ title, text }) {
+function ArchitectureCard({ title, text }) 
+{
   return (
     <div className="architecture-card">
       <h3>{title}</h3>
@@ -526,4 +537,3 @@ function ArchitectureCard({ title, text }) {
 }
 
 export default App;
- 
