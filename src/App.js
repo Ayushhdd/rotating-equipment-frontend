@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import MachineGallery from "./MachineGallery";
 import LoginScreen from "./LoginScreen";
 import ChartPanel from "./ChartPanel";
@@ -11,6 +11,20 @@ const API_BASE_URL = "https://rotating-backend-1.onrender.com";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
+
+
+  // NEW: which tab is active in top nav
+  const [activeTab, setActiveTab] = useState("home");
+
+  // NEW: references to sections for smooth scroll
+  const homeRef = useRef(null);
+  const testingRef = useRef(null);
+  const aboutRef = useRef(null);
+
+
+
 
   const [form, setForm] = useState({
     vibration_x: "",
@@ -52,6 +66,20 @@ function App() {
     setError("");
     setLoading(true);
     setResult(null);
+
+      const scrollToSection = (section) => {
+    setActiveTab(section);
+
+    let ref = null;
+    if (section === "home") ref = homeRef;
+    if (section === "testing") ref = testingRef;
+    if (section === "about") ref = aboutRef;
+
+    if (ref && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
 
     try {
       const payload = {
@@ -102,14 +130,46 @@ function App() {
     if (lower.includes("bearing")) return "badge danger";
     return "badge neutral";
   };
-  
+
   if (!isAuthenticated) {
   return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
 }
-  return (
-    <div className="app-root">
+   return (
+    <div className="app-root" ref={homeRef}>
+
+            {/* TOP NAV BAR */}
+      <nav className="top-nav">
+        <div className="top-nav-left">
+          <span className="nav-logo-text">REFD</span>
+        </div>
+        <div className="top-nav-right">
+          <button
+            type="button"
+            className={`nav-link ${activeTab === "home" ? "active" : ""}`}
+            onClick={() => scrollToSection("home")}
+          >
+            Home
+          </button>
+          <button
+            type="button"
+            className={`nav-link ${activeTab === "testing" ? "active" : ""}`}
+            onClick={() => scrollToSection("testing")}
+          >
+            Testing
+          </button>
+          <button
+            type="button"
+            className={`nav-link ${activeTab === "about" ? "active" : ""}`}
+            onClick={() => scrollToSection("about")}
+          >
+            About
+          </button>
+        </div>
+      </nav>
+
       {/* TOP HERO + NAV STRIP */}
       <header className="app-header">
+
         <div className="app-header-left">
           <div className="app-pill">• Predictive Maintenance</div>
           <h1 className="hero-title">
@@ -172,12 +232,13 @@ function App() {
       </div>
 
       {/* MAIN DASHBOARD AREA */}
-      <main className="app-main">
+            <main className="app-main">
         {/* LEFT SIDE: FORM + RESULTS */}
         <section className="main-left">
-          <div className="card card-animated">
+          <div className="card card-animated" ref={testingRef}>
             <div className="card-header">
               <h2>Single Record Prediction</h2>
+
               <p className="card-subtitle">
                 Stream a single time-window of sensor readings to the backend
                 and visualize the predicted fault in real time.
@@ -424,10 +485,13 @@ function App() {
         </aside>
       </main>
 
-      {/* EXTRA SECTIONS TO FORCE SCROLL + MAKE IT LOOK ADVANCED */}
-      <section className="page-section architecture-section">
+            {/* EXTRA SECTIONS TO FORCE SCROLL + MAKE IT LOOK ADVANCED */}
+      <section className="page-section architecture-section"
+        ref={aboutRef}
+      >
         <div className="section-header">
           <h2>System Architecture</h2>
+
           <p>
             High-level flow from raw rotating equipment sensors to fault
             diagnosis and visualization.

@@ -44,6 +44,78 @@ body {
   color: var(--text);
 }
 
+
+
+
+
+/* ===== Top Navigation Bar ===== */
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(4, 7, 18, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(14px);
+}
+
+.top-nav-left .nav-logo-text {
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.top-nav-right {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-link {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--text-soft);
+  background: transparent;
+  border: 1px solid transparent;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* Hover effect */
+.nav-link:hover {
+  background: var(--accent-soft);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+/* Active tab (selected section) */
+.nav-link.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #020308;
+  font-weight: 600;
+  box-shadow: 0 10px 26px rgba(47, 191, 136, 0.7);
+}
+
+
+
+
+
+
+
+
 /* Header / hero */
 
 .app-header {
