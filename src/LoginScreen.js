@@ -21,14 +21,28 @@ function LoginScreen({ onLogin }) {
     onLogin();
   };
 
-  return (
-    <div className="login-root">
-      <div className="login-card">
-        <div className="login-left">
-          <div className="app-pill">• Rotating Equipment</div>
-          <h1 className="login-title">
-            Fault Diagnosis <span className="hero-gradient">Dashboard</span>
-          </h1>
+ return (
+  <div className="login-root">
+    <div className="login-card">
+      <div className="login-left">
+  <div className="login-header-row">
+    <div className="login-brand">
+      <img
+        src="/logo.png"
+        alt="REFD logo"
+        className="login-logo-icon"
+      />
+      <span className="login-logo-text">REFD</span>
+    </div>
+
+    <div className="app-pill">• Rotating Equipment</div>
+  </div>
+  {/* rest stays same */}
+
+        <h1 className="login-title">
+          Fault Diagnosis <span className="hero-gradient">Dashboard</span>
+        </h1>
+
           <p className="login-subtitle">
             Sign in to access the predictive maintenance dashboard powered by
             FastAPI, XGBoost and MLP ensemble.

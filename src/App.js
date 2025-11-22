@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import MachineGallery from "./MachineGallery";
 import LoginScreen from "./LoginScreen";
 import ChartPanel from "./ChartPanel";
@@ -22,6 +22,34 @@ function App() {
   const homeRef = useRef(null);
   const testingRef = useRef(null);
   const aboutRef = useRef(null);
+
+
+
+    // Update active tab when user scrolls (scrollspy)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!homeRef.current || !testingRef.current || !aboutRef.current) return;
+
+      const offset = 140; // adjust if needed (nav height + some margin)
+
+      const testingTop = testingRef.current.getBoundingClientRect().top;
+      const aboutTop = aboutRef.current.getBoundingClientRect().top;
+
+      if (aboutTop <= offset) {
+        setActiveTab("about");
+      } else if (testingTop <= offset) {
+        setActiveTab("testing");
+      } else {
+        setActiveTab("home");
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // run once on mount
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
 
 
 
@@ -67,18 +95,7 @@ function App() {
     setLoading(true);
     setResult(null);
 
-      const scrollToSection = (section) => {
-    setActiveTab(section);
-
-    let ref = null;
-    if (section === "home") ref = homeRef;
-    if (section === "testing") ref = testingRef;
-    if (section === "about") ref = aboutRef;
-
-    if (ref && ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
+      
 
 
     try {
@@ -157,7 +174,11 @@ function App() {
             {/* TOP NAV BAR */}
       <nav className="top-nav">
         <div className="top-nav-left">
+          <div className="nav-logo">
+          <img src="/logo.png" alt="logo" className="nav-logo-icon" />
           <span className="nav-logo-text">REFD</span>
+          </div>
+
         </div>
         <div className="top-nav-right">
           <button

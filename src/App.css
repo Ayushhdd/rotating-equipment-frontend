@@ -40,7 +40,7 @@ body {
 
 .app-root {
   min-height: 100vh;
-  padding: 24px 32px 40px;
+  padding: 8px 32px 40px;
   color: var(--text);
 }
 
@@ -52,18 +52,41 @@ body {
 
 .top-nav {
   position: sticky;     /* NEW – stick to top while scrolling */
-  top: 12px;            /* distance from very top of page */
+  top: 0px;            /* distance from very top of page */
   z-index: 100;         /* stays above other cards */
 
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   padding: 8px 12px;
   border-radius: 999px;
   background: rgba(4, 7, 18, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.06);
   backdrop-filter: blur(14px);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-logo-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  padding: 3px;
+  background: radial-gradient(circle at top, rgba(93,140,255,0.4), rgba(5,8,21,0.9));
+  box-shadow: 0 0 14px rgba(93,140,255,0.7);
+}
+
+.nav-logo-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #35d29a, #5d8cff);
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 
@@ -783,6 +806,50 @@ body {
   }
 }
 /* ===== Startup Login Screen ===== */
+
+/* Brand logo in login screen */
+
+
+
+
+
+
+
+
+/* Row that contains logo + pill */
+.login-header-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+
+/* Brand logo in login screen */
+.login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-logo-icon {
+  width: 40px;          /* bigger */
+  height: 40px;
+  border-radius: 12px;
+  padding: 4px;
+  background: radial-gradient(circle at top, rgba(93,140,255,0.5), rgba(5,8,21,0.9));
+  box-shadow: 0 0 18px rgba(93,140,255,0.85);
+}
+
+.login-logo-text {
+  font-size: 1rem;      /* slightly larger text */
+  font-weight: 600;
+  background: linear-gradient(135deg, #35d29a, #5d8cff);
+  -webkit-background-clip: text;
+  color: transparent;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 
 .login-root {
   min-height: 100vh;
