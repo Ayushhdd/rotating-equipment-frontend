@@ -131,6 +131,23 @@ function App() {
     return "badge neutral";
   };
 
+    const scrollToSection = (section) => {
+    setActiveTab(section);
+
+    let ref = null;
+    if (section === "home") ref = homeRef;
+    if (section === "testing") ref = testingRef;
+    if (section === "about") ref = aboutRef;
+
+    if (ref && ref.current) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
+
   if (!isAuthenticated) {
   return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
 }
