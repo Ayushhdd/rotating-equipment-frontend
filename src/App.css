@@ -277,6 +277,12 @@ body {
   box-shadow: 0 0 10px rgba(63, 230, 166, 0.9);
 }
 
+.status-dot.offline {
+  background: #ff4d6a;
+  box-shadow: 0 0 10px rgba(255, 77, 106, 0.9);
+}
+
+
 .status-title {
   font-size: 0.8rem;
   color: var(--text-soft);
@@ -341,7 +347,38 @@ body {
 .card-header h2 {
   margin: 0 0 4px;
   font-size: 1.15rem;
+
 }
+
+/* Prediction Result header layout with report button */
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.result-report-btn {
+  padding: 4px 14px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+
+/* History card header layout */
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-clear-btn {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
 
 .card-subtitle {
   margin: 0;
@@ -486,6 +523,7 @@ body {
   align-items: stretch;
 }
 
+
 .result-label-row {
   display: flex;
   justify-content: space-between;
@@ -568,6 +606,63 @@ body {
   font-size: 0.9rem;
   color: var(--text-soft);
 }
+
+
+
+/* Fault explanation panel */
+
+.fault-explainer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fault-explainer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.fault-explainer-header h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.fault-severity-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ffb347, #ff4d6a);
+  color: #020308;
+  box-shadow: 0 0 14px rgba(255, 115, 102, 0.7);
+}
+
+.fault-explainer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  font-size: 0.8rem;
+}
+
+.fault-explainer-grid h4 {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+}
+
+.fault-explainer-grid p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+@media (max-width: 900px) {
+  .fault-explainer-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 
 /* History table */
 
@@ -961,4 +1056,46 @@ body {
   .login-title {
     font-size: 2rem;
   }
+}
+
+/* === PRINTABLE REPORT VIEW === */
+
+.report-root {
+  padding: 32px;
+  background: #ffffff;
+  color: #000000;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.report-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.report-title {
+  margin: 0 0 4px;
+  font-size: 2rem;
+  color: #000;
+}
+
+.report-sub {
+  color: #555;
+  margin-bottom: 16px;
+}
+
+.report-card h2 {
+  margin-top: 24px;
+  color: #222;
+}
+
+.report-card ul {
+  padding-left: 20px;
+}
+
+.report-actions {
+  margin-top: 32px;
+  display: flex;
+  gap: 12px;
 }

@@ -3,19 +3,26 @@ import "./MachineGallery.css";
 
 function MachineGallery() {
   const items = [
-  { label: "Turning", img: "/assets/machines/turning.jpg" },
-  { label: "Milling", img: "/assets/machines/milling.jpg" },
-];
+    { label: "Turning Center", img: "/assets/machines/turning.jpg" },
+    { label: "CNC Milling Machine", img: "/assets/machines/milling.jpg" },
+    { label: "CNC Machining Center", img: "/assets/machines/cnc.png" },
+    { label: "Drilling Machine", img: "/assets/machines/drilling.png" },
+  ];
+
 
 
 
   return (
     <div className="card machine-gallery">
       <div className="card-header">
-        <h2>Common Rotating Equipment</h2>
-        <p className="card-subtitle">
-          Examples of industrial machines where fault diagnosis is essential.
-        </p>
+       
+      <h2>Rotating Equipment in Industry</h2>
+<p className="card-subtitle">
+  Typical machines where vibration–based fault diagnosis and predictive maintenance are applied.
+</p>
+
+
+
       </div>
       <div className="machine-grid">
         {items.map((item, i) => (

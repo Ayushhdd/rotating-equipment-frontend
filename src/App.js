@@ -13,6 +13,12 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 
+   const [apiStatus, setApiStatus] = useState("checking"); 
+
+
+   const [showReport, setShowReport] = useState(false);
+
+
 
 
   // NEW: which tab is active in top nav
@@ -51,6 +57,40 @@ function App() {
   }, []);
 
 
+    // NEW: Periodically check backend health
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkHealth = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/`);
+        if (!isMounted) return;
+
+        if (res.status === 200) {
+          setApiStatus("online");
+        } else {
+          setApiStatus("offline");
+        }
+      } catch (err) {
+        if (!isMounted) return;
+        setApiStatus("offline");
+      }
+    };
+
+    // check once immediately
+    checkHealth();
+
+    // then every 15 seconds
+    const intervalId = setInterval(checkHealth, 15000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(intervalId);
+    };
+  }, []);
+
+
+
 
 
 
@@ -77,7 +117,7 @@ function App() {
     }));
   };
 
-  const resetForm = () => {
+    const resetForm = () => {
     setForm({
       vibration_x: "",
       vibration_y: "",
@@ -88,6 +128,25 @@ function App() {
     setError("");
     setResult(null);
   };
+
+  const fillDemoValues = () => {
+    // Example demo values – you can tweak later if you want a specific fault
+    setForm({
+      vibration_x: "4.8",
+      vibration_y: "3.9",
+      vibration_z: "2.2",
+      acoustic_level: "215",
+      temperature: "65",
+    });
+
+    setError("");
+  };
+
+    const clearHistory = () => {
+    setHistory([]);
+  };
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -168,6 +227,73 @@ function App() {
   if (!isAuthenticated) {
   return <LoginScreen onLogin={() => setIsAuthenticated(true)} />;
 }
+  // Decide status text based on API + prediction state
+  let statusText = "";
+
+  if (loading) {
+    statusText = "Running prediction...";
+  } else if (error) {
+    statusText = "Prediction error";
+  } else if (apiStatus === "online") {
+    statusText = "Online • Ready";
+  } else if (apiStatus === "checking") {
+    statusText = "Checking API...";
+  } else {
+    statusText = "Backend offline";
+  }
+
+
+// === PRINTABLE REPORT SCREEN ===
+if (showReport && result) {
+  return (
+    <div className="report-root">
+      <div className="report-card">
+        <h1 className="report-title">Fault Diagnosis Report</h1>
+        <p className="report-sub">{new Date().toLocaleString()}</p>
+
+        <h2>1. Predicted Fault</h2>
+        <p><strong>Label:</strong> {result.fault_label}</p>
+        <p><strong>Fault Code:</strong> {result.fault_code}</p>
+        <p><strong>Confidence:</strong> {result.confidencePercent.toFixed(2)}%</p>
+
+        <h2>2. Sensor Inputs</h2>
+        <ul>
+          <li>Vibration X: {result.input.vibration_x}</li>
+          <li>Vibration Y: {result.input.vibration_y}</li>
+          <li>Vibration Z: {result.input.vibration_z}</li>
+          <li>Acoustic Level: {result.input.acoustic_level}</li>
+          <li>Temperature: {result.input.temperature}</li>
+        </ul>
+
+        <h2>3. Interpretation</h2>
+        <p><strong>Meaning:</strong> {getFaultInfo(result.fault_label).meaning}</p>
+        <p><strong>Reason:</strong> {getFaultInfo(result.fault_label).reason}</p>
+        <p><strong>Recommended Action:</strong> {getFaultInfo(result.fault_label).action}</p>
+
+       <div className="report-actions">
+  <button
+    className="btn primary"
+    onClick={() => window.print()}
+  >
+    Print / Save as PDF
+  </button>
+
+  <button
+    className="btn ghost"
+    onClick={() => setShowReport(false)}
+  >
+    Back to Dashboard
+  </button>
+</div>
+
+      </div>
+    </div>
+  );
+}
+
+
+
+
    return (
     <div className="app-root" ref={homeRef}>
 
@@ -247,22 +373,22 @@ function App() {
           </div>
         </div>
 
-        <div className="app-header-right">
-          <div className="status-card glow">
-            <span className="status-dot online" />
-            <div>
-              <div className="status-title">Model Status</div>
-              <div className="status-sub">
-                {error
-                  ? "API error"
-                  : loading
-                  ? "Running prediction..."
-                  : "Ready"}
-              </div>
-            </div>
-          </div>
-        </div>
+<div className="app-header-right">
+  <div className="status-card glow">
+    <span
+      className={`status-dot ${
+        apiStatus === "online" ? "online" : "offline"
+      }`}
+    />
+    <div>
+      <div className="status-title">Model Status</div>
+      <div className="status-sub">{statusText}</div>
+    </div>
+  </div>
+</div>
+
       </header>
+
 
       <div className="scroll-indicator">
         <span className="scroll-text">Scroll to explore dashboard</span>
@@ -320,23 +446,34 @@ function App() {
                 placeholder="e.g. 60"
               />
 
-              <div className="form-actions">
-                <button
-                  type="submit"
-                  className="btn primary"
-                  disabled={loading}
-                >
-                  {loading ? "Predicting..." : "Predict Fault"}
-                </button>
-                <button
-                  type="button"
-                  className="btn ghost"
-                  onClick={resetForm}
-                  disabled={loading}
-                >
-                  Reset
-                </button>
-              </div>
+             <div className="form-actions">
+  <button
+    type="submit"
+    className="btn primary"
+    disabled={loading}
+  >
+    {loading ? "Predicting..." : "Predict Fault"}
+  </button>
+
+  <button
+    type="button"
+    className="btn ghost"
+    onClick={resetForm}
+    disabled={loading}
+  >
+    Reset
+  </button>
+
+  <button
+    type="button"
+    className="btn ghost"
+    onClick={fillDemoValues}
+    disabled={loading}
+  >
+    Demo Values
+  </button>
+</div>
+
             </form>
 
             {error && <div className="alert error">{error}</div>}
@@ -345,89 +482,148 @@ function App() {
           <div className="result-layout">
             {/* CURRENT RESULT CARD */}
             <div className="card result-card card-animated">
-              <div className="card-header">
-                <h2>Prediction Result</h2>
-              </div>
-              <ChartPanel history={history} />
+  <div className="card-header result-header">
+    <h2>Prediction Result</h2>
+    {result && (
+      <button
+        type="button"
+        className="btn ghost result-report-btn"
+        onClick={() => setShowReport(true)}
+      >
+        Printable Report
+      </button>
+    )}
+  </div>
 
-              {result ? (
-                <div className="result-content">
-                  <div className="result-main">
-                    <div className="result-label-row">
-                      <span className="result-label-title">Fault Label</span>
-                      <span className={faultBadgeClass(result.fault_label)}>
-                        {result.fault_label}
-                      </span>
-                    </div>
+  <ChartPanel history={history} />
 
-                    <div className="result-kpis">
-                      <div className="kpi">
-                        <span className="kpi-label">Fault Code</span>
-                        <span className="kpi-value">{result.fault_code}</span>
-                      </div>
-                      <div className="kpi">
-                        <span className="kpi-label">Confidence</span>
-                        <span className="kpi-value">
-                          {result.confidencePercent.toFixed(2)}%
-                        </span>
-                      </div>
-                    </div>
 
-                    {/* PROGRESS BAR */}
-                    <div className="confidence-bar">
-                      <div
-                        className="confidence-fill"
-                        style={{
-                          width: `${Math.min(
-                            Math.max(result.confidencePercent, 0),
-                            100
-                          )}%`,
-                        }}
-                      />
-                    </div>
 
-                    <p className="small-text muted">
-                      Confidence is based on the ensemble of XGBoost and MLP
-                      probabilities (soft vote).
-                    </p>
-                  </div>
+{result ? (
+  <>
+    <div className="result-content">
+      <div className="result-main">
+        <div className="result-label-row">
+          <span className="result-label-title">Fault Label</span>
+          <span className={faultBadgeClass(result.fault_label)}>
+            {result.fault_label}
+          </span>
+        </div>
 
-                  <div className="result-input-summary">
-                    <h3>Input Snapshot</h3>
-                    <div className="input-grid">
-                      <span>Vx</span>
-                      <span>{result.input.vibration_x}</span>
-                      <span>Vy</span>
-                      <span>{result.input.vibration_y}</span>
-                      <span>Vz</span>
-                      <span>{result.input.vibration_z}</span>
-                      <span>Acoustic</span>
-                      <span>{result.input.acoustic_level}</span>
-                      <span>Temp (°C)</span>
-                      <span>{result.input.temperature}</span>
-                    </div>
-                    <p className="small-text">
-                      You can screenshot this card and directly paste it into
-                      your report as an example prediction.
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <p className="placeholder-text">
-                  Run a prediction to see the ensemble output and confidence
-                  visualization here.
-                </p>
-              )}
-            </div>
+        <div className="result-kpis">
+          <div className="kpi">
+            <span className="kpi-label">Fault Code</span>
+            <span className="kpi-value">{result.fault_code}</span>
+          </div>
+          <div className="kpi">
+            <span className="kpi-label">Confidence</span>
+            <span className="kpi-value">
+              {result.confidencePercent.toFixed(2)}%
+            </span>
+          </div>
+        </div>
+
+        {/* PROGRESS BAR */}
+        <div className="confidence-bar">
+          <div
+            className="confidence-fill"
+            style={{
+              width: `${Math.min(
+                Math.max(result.confidencePercent, 0),
+                100
+              )}%`,
+            }}
+          />
+        </div>
+
+        <p className="small-text muted">
+          Confidence is based on the ensemble of XGBoost and MLP
+          probabilities (soft vote).
+        </p>
+      </div>
+
+      <div className="result-input-summary">
+        <h3>Input Snapshot</h3>
+        <div className="input-grid">
+          <span>Vx</span>
+          <span>{result.input.vibration_x}</span>
+          <span>Vy</span>
+          <span>{result.input.vibration_y}</span>
+          <span>Vz</span>
+          <span>{result.input.vibration_z}</span>
+          <span>Acoustic</span>
+          <span>{result.input.acoustic_level}</span>
+          <span>Temp (°C)</span>
+          <span>{result.input.temperature}</span>
+        </div>
+        <p className="small-text">
+          You can screenshot this card and directly paste it into
+          your report as an example prediction.
+        </p>
+      </div>
+    </div>
+
+    {/* NEW: Fault explanation block */}
+   <div className="fault-explainer">
+        <div className="fault-explainer-header">
+          <h3>Interpretation of Result</h3>
+          <span className="fault-severity-pill">
+            {getFaultInfo(result.fault_label).severity}
+          </span>
+        </div>
+
+        <div className="fault-explainer-grid">
+          <div>
+            <h4>What this fault means</h4>
+            <p>{getFaultInfo(result.fault_label).meaning}</p>
+          </div>
+          <div>
+            <h4>Why this might happen</h4>
+            <p>{getFaultInfo(result.fault_label).reason}</p>
+          </div>
+          <div>
+            <h4>Recommended action</h4>
+            <p>{getFaultInfo(result.fault_label).action}</p>
+          </div>
+        </div>
+
+        <p className="small-text muted">
+          These recommendations are generic and for academic demonstration.
+          In real plants, final decisions must be taken by maintenance
+          engineers after physical inspection.
+        </p>
+      </div>
+    </>
+  ) : (
+    <p className="placeholder-text">
+      Run a prediction to see the ensemble output, confidence visualization
+      and detailed interpretation here.
+    </p>
+  )}
+</div>
 
             {/* HISTORY TABLE */}
             <div className="card history-card card-animated">
-              <div className="card-header">
-                <h2>Recent Predictions</h2>
-                <p className="card-subtitle">
-                  Last 10 runs of the model in this browser session.
-                </p>
-              </div>
+  <div className="card-header history-header">
+    <div>
+      <h2>Recent Predictions</h2>
+      <p className="card-subtitle">
+        Last 10 runs of the model in this browser session.
+      </p>
+    </div>
+
+    {history.length > 0 && (
+      <button
+        type="button"
+        className="btn ghost history-clear-btn"
+        onClick={clearHistory}
+        disabled={loading}
+      >
+        Clear
+      </button>
+    )}
+  </div>
+
               {history.length === 0 ? (
                 <p className="placeholder-text">
                   Predictions history will appear here once you start
@@ -636,6 +832,75 @@ function ArchitectureCard({ title, text })
       <p>{text}</p>
     </div>
   );
+}
+
+// NEW: helper to describe each fault
+function getFaultInfo(faultLabel) {
+  if (!faultLabel) {
+    return {
+      severity: "Unknown",
+      meaning: "No fault predicted yet.",
+      reason: "Run a prediction to see detailed explanation.",
+      action: "Enter sensor values and click Predict Fault.",
+    };
+  }
+
+  const label = faultLabel.toLowerCase();
+
+  if (label.includes("normal")) {
+    return {
+      severity: "Low (Normal)",
+      meaning: "Machine is operating within normal vibration, acoustic and temperature limits.",
+      reason: "No significant imbalance, bearing damage or overheating signature detected in the features.",
+      action: "Continue normal operation and monitoring. Plan routine preventive maintenance as per schedule.",
+    };
+  }
+
+  if (label.includes("imbalance")) {
+    return {
+      severity: "Medium (Imbalance)",
+      meaning: "Mass of the rotating parts is not evenly distributed around the axis.",
+      reason:
+        "Higher vibration amplitude on one or more axes indicates unbalanced rotor, loose coupling or misalignment.",
+      action:
+        "Inspect coupling, rotor and mounting. Perform balancing/alignment and tighten mechanical joints.",
+    };
+  }
+
+  if (label.includes("bearing")) {
+    return {
+      severity: "High (Bearing Fault)",
+      meaning:
+        "Model has detected a pattern consistent with a damaged or degraded rolling element bearing.",
+      reason:
+        "Characteristic vibration and acoustic signatures (high kurtosis, crest factor, specific frequency bands) point to bearing wear or defects.",
+      action:
+        "Plan an immediate shutdown window to inspect the bearing. Replace or lubricate as required and verify alignment.",
+    };
+  }
+
+  if (label.includes("overheat") || label.includes("overheating")) {
+    return {
+      severity: "Critical (Overheating)",
+      meaning:
+        "Temperature of the rotating equipment is significantly above the safe operating range.",
+      reason:
+        "Excess friction, overloading, insufficient lubrication or cooling failure can cause high thermal readings.",
+      action:
+        "Reduce load or stop the machine. Check lubrication, cooling system, bearings and electrical connections before restarting.",
+    };
+  }
+
+  // default fallback
+  return {
+    severity: "Medium",
+    meaning:
+      "A non-standard fault class was detected by the model. Detailed label name is shown above.",
+    reason:
+      "The feature vector lies closer to this fault class in the model’s feature space.",
+    action:
+      "Review the sensor readings and compare with historical data. Perform a physical inspection if readings look abnormal.",
+  };
 }
 
 export default App;
