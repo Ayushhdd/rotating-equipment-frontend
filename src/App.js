@@ -270,22 +270,21 @@ if (showReport && result) {
         <p><strong>Reason:</strong> {getFaultInfo(result.fault_label).reason}</p>
         <p><strong>Recommended Action:</strong> {getFaultInfo(result.fault_label).action}</p>
 
-       <div className="report-actions">
-  <button
-    className="btn primary"
-    onClick={() => window.print()}
-  >
-    Print / Save as PDF
-  </button>
+        <div className="report-actions">
+          <button
+            className="btn primary"
+            onClick={() => window.print()}
+          >
+            Print / Save as PDF
+          </button>
 
-  <button
-    className="btn ghost"
-    onClick={() => setShowReport(false)}
-  >
-    Back to Dashboard
-  </button>
-</div>
-
+          <button
+            className="btn ghost"
+            onClick={() => setShowReport(false)}
+          >
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     </div>
   );
