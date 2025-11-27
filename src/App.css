@@ -501,7 +501,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  height: 100%;
 }
 
 .result-card {
@@ -509,11 +508,12 @@ body {
 }
 
 .history-card {
-  flex: 1 1 0;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   min-height: 0;
 }
+
 
 .result-content {
   margin-top: 10px;
